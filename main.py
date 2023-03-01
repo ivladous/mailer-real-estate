@@ -9,22 +9,24 @@ from openpyxl import load_workbook
 from openpyxl.utils.cell import column_index_from_string
 import time
 
-START_ROW = 2
-END_ROW = 70
+START_ROW = 81
+END_ROW = 170
 
 FULL_NAME_COLUMN = 'G'
 PHONE_NUMBER_COLUMNS = ['H', 'J', 'K']
 NUMBER_BEDROOMS_COLUMN = 'P'
 MESSAGES_LOGS_COLUMN = 'Q'
 # BUILDING_NAME_COLUMN = 'D'
+BUILDING_NAME = 'Fountain Views 2'
+PROJECT_NAME = 'TarFV2'
 
 receiver_col_index = column_index_from_string(FULL_NAME_COLUMN)
 messages_logs_col_ind = column_index_from_string(MESSAGES_LOGS_COLUMN)
 # building_name_col = column_index_from_string(BUILDING_NAME_COLUMN)
 number_bedroom_col = column_index_from_string(NUMBER_BEDROOMS_COLUMN)
 
-success_list: list = []
-fail_list: list = []
+success_list: list = json.loads('success_list_TarFV2.json')
+fail_list: list = json.loads('failed_list_TarFV2.json')
 
 
 def name_convertor(full_name: str) -> str:
@@ -33,7 +35,7 @@ def name_convertor(full_name: str) -> str:
 
 
 # Load the Excel sheet containing the receivers' phone numbers
-wb = load_workbook('boulevard_p_corr.xlsx')
+wb = load_workbook(f'{PROJECT_NAME}.xlsx')
 ws = wb.active
 
 # Set up the Chrome driver and navigate to WhatsApp Web
@@ -49,15 +51,15 @@ for row_index, row in enumerate(ws.iter_rows(min_row=START_ROW, max_row=END_ROW,
     logs_cell = ws.cell(row=row_index, column=messages_logs_col_ind)
     for phone_col_letter in PHONE_NUMBER_COLUMNS:
 
-        with open('success_list_bp0_70.json', 'w') as file:
+        with open(f'success_list_{PROJECT_NAME}.json', 'w') as file:
             # Write the list to the file in JSON format
             json.dump(success_list, file)
 
-        with open('failed_list_bp0_70.json', 'w') as file:
+        with open(f'failed_list_{PROJECT_NAME}.json', 'w') as file:
             # Write the list to the file in JSON format
             json.dump(fail_list, file)
 
-        wb.save('bp0_70_result.xlsx')
+        wb.save(f'{PROJECT_NAME}.xlsx')
 
         phone_col_index = column_index_from_string(phone_col_letter)
 
@@ -83,7 +85,7 @@ for row_index, row in enumerate(ws.iter_rows(min_row=START_ROW, max_row=END_ROW,
 
         message = (
             f'''Dear {receiver},
-            This is Vlad, I am a downtown specialist. Just want to check if you are still the owner of {number_bedroom} bedroom apartment in Boulevard Point and I was wondering if you might be interested to sell or lease it. I am dealing with many investors that are interested in your property. Feel free to contact me for any inquiries.
+            This is Vlad, I am a downtown specialist. Just want to check if you are still the owner of {number_bedroom} bedroom apartment in {BUILDING_NAME} and I was wondering if you might be interested to sell or lease it. I am dealing with many investors that are interested in your property. Feel free to contact me for any inquiries.
             Thank you & best regards,
             Vlad'''
         )
